@@ -1,0 +1,116 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "field:block_name",
+ "creation": "2026-07-17 22:22:16.000969",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "block_name",
+  "block_type",
+  "category",
+  "column_break_icon",
+  "icon",
+  "is_standard",
+  "is_active",
+  "section_break_config",
+  "default_props",
+  "thumbnail"
+ ],
+ "fields": [
+  {
+   "fieldname": "block_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Block Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "block_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Block Type",
+   "options": "Section\nText\nImage\nButton\nColumns\nDivider\nSpacer\nHeader\nFooter\nSocial Icons\nVideo\nForm Field\nHTML",
+   "reqd": 1
+  },
+  {
+   "default": "Content",
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Category",
+   "options": "Layout\nContent\nMedia\nForm\nSocial"
+  },
+  {
+   "fieldname": "column_break_icon",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Icon name shown in the block palette",
+   "fieldname": "icon",
+   "fieldtype": "Data",
+   "label": "Icon"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_standard",
+   "fieldtype": "Check",
+   "label": "Is Standard",
+   "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active"
+  },
+  {
+   "fieldname": "section_break_config",
+   "fieldtype": "Section Break",
+   "label": "Configuration"
+  },
+  {
+   "fieldname": "default_props",
+   "fieldtype": "Code",
+   "label": "Default Props (JSON)",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "thumbnail",
+   "fieldtype": "Attach Image",
+   "label": "Thumbnail"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-07-17 22:22:16.000969",
+ "modified_by": "Administrator",
+ "module": "Marketing Studio",
+ "name": "Marketing Block",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

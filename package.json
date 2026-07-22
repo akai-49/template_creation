@@ -1,0 +1,11 @@
+{
+	"private": true,
+	"type": "module",
+	"name": "marketing_studio",
+	"description": "Drag-and-drop marketing template builder for email, web forms and landing pages",
+	"scripts": {
+		"postinstall": "cd frontend && yarn install --check-files",
+		"dev": "cd frontend && yarn dev",
+		"build": "cd frontend && yarn build"
+	}
+}

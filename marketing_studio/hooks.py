@@ -4,6 +4,8 @@ app_publisher = "Abhishek"
 app_description = "Drag-and-drop marketing template builder for email, web forms and landing pages"
 app_email = "abhishek.dev.4949@gmail.com"
 app_license = "mit"
+app_icon_title = "Marketing Studio"
+app_icon_route = "/marketing-studio"
 
 # Apps
 # ------------------
@@ -11,15 +13,14 @@ app_license = "mit"
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "marketing_studio",
-# 		"logo": "/assets/marketing_studio/logo.png",
-# 		"title": "Marketing Studio",
-# 		"route": "/marketing_studio",
-# 		"has_permission": "marketing_studio.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+	{
+		"name": "marketing_studio",
+		"logo": "/assets/marketing_studio/logo.png",
+		"title": "Marketing Studio",
+		"route": "/marketing-studio",
+	}
+]
 
 # Includes in <head>
 # ------------------
@@ -70,6 +71,11 @@ app_license = "mit"
 # automatically create page for each record of this doctype
 # website_generators = ["Web Page"]
 
+website_route_rules = [
+	{"from_route": "/marketing-studio", "to_route": "marketing_studio"},
+	{"from_route": "/marketing-studio/<path:app_path>", "to_route": "marketing_studio"},
+]
+
 # automatically load and sync documents of this doctype from downstream apps
 # importable_doctypes = [doctype_1]
 
@@ -85,8 +91,7 @@ app_license = "mit"
 # Installation
 # ------------
 
-# before_install = "marketing_studio.install.before_install"
-# after_install = "marketing_studio.install.after_install"
+after_install = "marketing_studio.setup_blocks.seed_blocks"
 
 # Uninstallation
 # ------------
@@ -255,4 +260,12 @@ app_license = "mit"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
+
+override_doctype_class = {
+	"Desktop Icon": "marketing_studio.overrides.desktop_icon.CustomDesktopIcon"
+}
+
+doctype_js = {
+	"Desktop Icon": "public/js/desktop_icon.js"
+}
 

@@ -1,6 +1,7 @@
 import frappe
 from frappe.desk.doctype.desktop_icon.desktop_icon import DesktopIcon
 
+
 class CustomDesktopIcon(DesktopIcon):
 	def validate(self):
 		if self.link_type == "External":

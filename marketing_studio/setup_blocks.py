@@ -177,7 +177,6 @@ def seed_blocks():
 		doc.is_active = 1
 		doc.insert(ignore_permissions=True)
 		print(f"Seeded block: {block['block_name']}")
-	frappe.db.commit()
 	print("Block library seeded.")
 
 
@@ -193,5 +192,4 @@ def update_block_defaults():
 			json.dumps(block["default_props"]),
 		)
 		print(f"Updated defaults: {block['block_name']}")
-	frappe.db.commit()
 	print("Block defaults updated.")

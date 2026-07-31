@@ -10,7 +10,8 @@ app_icon_route = "/marketing-studio"
 # Apps
 # ------------------
 
-# required_apps = []
+# Marketing Form Submission links to "Marketing Campaign", which msuite_workspace owns.
+required_apps = ["msuite_workspace"]
 
 # Each item in the list will be shown as an app in the apps page
 add_to_apps_screen = [
@@ -96,8 +97,7 @@ after_install = "marketing_studio.setup_blocks.seed_blocks"
 # Uninstallation
 # ------------
 
-# before_uninstall = "marketing_studio.uninstall.before_uninstall"
-# after_uninstall = "marketing_studio.uninstall.after_uninstall"
+before_uninstall = "marketing_studio.uninstall.before_uninstall"
 
 # Integration Setup
 # ------------------
@@ -252,20 +252,18 @@ after_install = "marketing_studio.setup_blocks.seed_blocks"
 # Automatically update python controller files with type annotations for this app.
 # export_python_type_annotations = True
 
-# default_log_clearing_doctypes = {
-# 	"Logging DocType Name": 30  # days to retain logs
-# }
+# Submissions are lead data, not logs: Log Settings will pick this up as a default
+# retention row and then hard-delete rows older than it, so the window is a full year.
+# Change it in Desk (Log Settings) if that's wrong for your retention policy.
+default_log_clearing_doctypes = {
+	"Marketing Form Submission": 365,
+}
 
 # Translation
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
-override_doctype_class = {
-	"Desktop Icon": "marketing_studio.overrides.desktop_icon.CustomDesktopIcon"
-}
+override_doctype_class = {"Desktop Icon": "marketing_studio.overrides.desktop_icon.CustomDesktopIcon"}
 
-doctype_js = {
-	"Desktop Icon": "public/js/desktop_icon.js"
-}
-
+doctype_js = {"Desktop Icon": "public/js/desktop_icon.js"}

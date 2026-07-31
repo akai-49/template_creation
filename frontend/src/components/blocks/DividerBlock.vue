@@ -1,6 +1,11 @@
 <template>
   <div :style="{ padding: paddingStyle(p) }">
-    <hr :style="{ borderColor: p.color || '#e5e7eb', borderTopWidth: (p.thickness ?? 1) + 'px' }" />
+    <hr
+      :style="{
+        borderColor: p.color || '#e5e7eb',
+        borderTopWidth: (p.thickness ?? 1) + 'px',
+      }"
+    />
   </div>
 </template>
 

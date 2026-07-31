@@ -25,19 +25,23 @@
       <!-- ponytail: width handles move widthPercent, top/bottom handles move padding; separate from Image's own content-width slider, unify if it confuses people -->
       <div
         v-if="!isContainer"
+        aria-hidden="true"
         class="absolute -right-1.5 top-1/2 z-10 h-8 w-3 -translate-y-1/2 cursor-ew-resize rounded bg-blue-500 shadow"
         @mousedown.stop="(e) => startResize(e, 'right')"
       />
       <div
         v-if="!isContainer"
+        aria-hidden="true"
         class="absolute -left-1.5 top-1/2 z-10 h-8 w-3 -translate-y-1/2 cursor-ew-resize rounded bg-blue-500 shadow"
         @mousedown.stop="(e) => startResize(e, 'left')"
       />
       <div
+        aria-hidden="true"
         class="absolute -top-1.5 left-1/2 z-10 h-3 w-8 -translate-x-1/2 cursor-ns-resize rounded bg-blue-500 shadow"
         @mousedown.stop="(e) => startResize(e, 'top')"
       />
       <div
+        aria-hidden="true"
         class="absolute -bottom-1.5 left-1/2 z-10 h-3 w-8 -translate-x-1/2 cursor-ns-resize rounded bg-blue-500 shadow"
         @mousedown.stop="(e) => startResize(e, 'bottom')"
       />
@@ -136,9 +140,13 @@ function onResize(e) {
   if (!dragState) return
   const p = props.block.data.props
   if (dragState.edge === 'right' || dragState.edge === 'left') {
-    const dx = dragState.edge === 'right' ? e.clientX - dragState.startX : dragState.startX - e.clientX
+    const dx =
+      dragState.edge === 'right' ? e.clientX - dragState.startX : dragState.startX - e.clientX
     const newWidthPx = dragState.startWidth + dx
-    p.widthPercent = Math.min(100, Math.max(10, Math.round((newWidthPx / dragState.parentWidth) * 100)))
+    p.widthPercent = Math.min(
+      100,
+      Math.max(10, Math.round((newWidthPx / dragState.parentWidth) * 100)),
+    )
   } else if (dragState.edge === 'top') {
     const dy = dragState.startY - e.clientY
     p.paddingTop = Math.min(80, Math.max(0, Math.round(dragState.startPaddingTop + dy)))

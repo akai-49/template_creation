@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, master, develop]
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Frontend (lint, test, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+          cache-dependency-path: frontend/yarn.lock
+
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
+      - run: npx prettier --check "src/**/*.{js,vue,css}"
+      - run: yarn test
+      - run: yarn build
+
+  python:
+    name: Python (ruff + frappe tests)
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:10.6
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: apps/marketing_studio
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Lint
+        working-directory: apps/marketing_studio
+        run: |
+          pipx install ruff
+          ruff check .
+          ruff format --check .
+
+      - name: Set up bench
+        run: |
+          pip install frappe-bench
+          # bench needs a MariaDB that allows the utf8mb4 collation frappe uses
+          mysql -h 127.0.0.1 -u root -proot -e "SET GLOBAL character_set_server = 'utf8mb4'; SET GLOBAL collation_server = 'utf8mb4_unicode_ci';"
+          bench init --skip-redis-config-generation --skip-assets --python "$(which python)" ~/frappe-bench
+
+      - name: Create site and install the app
+        working-directory: /home/runner/frappe-bench
+        env:
+          # Marketing Form Submission has a Link to "Marketing Campaign", which lives in
+          # msuite_workspace, so the DocType won't sync without it. Set this repository
+          # variable (Settings → Secrets and variables → Actions → Variables) to a URL the
+          # runner can clone, e.g. https://x-access-token:${{ secrets.GH_PAT }}@github.com/org/msuite_workspace
+          MSUITE_WORKSPACE_REPO: ${{ vars.MSUITE_WORKSPACE_REPO }}
+        run: |
+          if [ -z "$MSUITE_WORKSPACE_REPO" ]; then
+            echo "::error::MSUITE_WORKSPACE_REPO is not set. marketing_studio depends on msuite_workspace (see required_apps in hooks.py)."
+            exit 1
+          fi
+          bench set-config -g db_host 127.0.0.1
+          bench set-config -g redis_cache "redis://127.0.0.1:6379"
+          bench set-config -g redis_queue "redis://127.0.0.1:6379"
+          bench set-config -g redis_socketio "redis://127.0.0.1:6379"
+          bench get-app --skip-assets "$MSUITE_WORKSPACE_REPO"
+          cp -r "$GITHUB_WORKSPACE/apps/marketing_studio" apps/marketing_studio
+          bench new-site test_site --db-root-password root --admin-password admin --no-mariadb-socket
+          bench --site test_site install-app msuite_workspace
+          bench --site test_site install-app marketing_studio
+
+      - name: Run tests
+        working-directory: /home/runner/frappe-bench
+        run: bench --site test_site run-tests --app marketing_studio

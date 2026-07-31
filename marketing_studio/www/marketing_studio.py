@@ -10,7 +10,6 @@ def get_context():
 	if frappe.session.user == "Guest":
 		frappe.throw(_("Please login to access Marketing Studio"), frappe.PermissionError)
 
-	frappe.db.commit()
 	context = frappe._dict()
 	context.boot = get_boot()
 	return context

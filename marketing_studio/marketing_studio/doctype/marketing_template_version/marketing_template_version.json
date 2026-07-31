@@ -19,7 +19,8 @@
    "in_list_view": 1,
    "label": "Template",
    "options": "Marketing Template",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "version_label",

@@ -1,4 +1,5 @@
 import { escapeHtml } from '../escapeHtml'
+import { safeUrl } from '../safeUrl'
 import { paddingCss } from '../paddingCss'
 
 function radiusFor(style) {
@@ -11,7 +12,7 @@ export function renderButton(block) {
   const p = block.data.props || {}
   const bg = escapeHtml(p.backgroundColor || '#5b21b6')
   const color = escapeHtml(p.textColor || '#ffffff')
-  const url = escapeHtml(p.url || '#')
+  const url = escapeHtml(safeUrl(p.url))
   const align = escapeHtml(p.align || 'left')
   const fontSize = escapeHtml((p.fontSize ?? 16) + 'px')
   const fontWeight = escapeHtml(p.fontWeight || 'bold')

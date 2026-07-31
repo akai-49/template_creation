@@ -11,26 +11,27 @@
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <div class="flex overflow-hidden rounded border border-gray-300">
+        <div
+          class="flex overflow-hidden rounded border border-gray-300"
+          role="group"
+          aria-label="Preview width"
+        >
           <button
+            v-for="mode in PREVIEW_MODES"
+            :key="mode.label"
             type="button"
-            class="px-2 py-1.5 text-xs"
-            :class="previewWidth === 600 ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'"
-            @click="previewWidth = 600"
+            class="px-2 py-1.5 text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-blue-600"
+            :class="
+              previewWidth === mode.width ? 'bg-gray-900 text-white' : 'bg-white text-gray-600'
+            "
+            :aria-pressed="previewWidth === mode.width"
+            @click="previewWidth = mode.width"
           >
-            Desktop
-          </button>
-          <button
-            type="button"
-            class="px-2 py-1.5 text-xs"
-            :class="previewWidth === 375 ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'"
-            @click="previewWidth = 375"
-          >
-            Mobile
+            {{ mode.label }}
           </button>
         </div>
-        <span v-if="saving" class="text-xs text-gray-400">Saving…</span>
-        <span v-else-if="lastSaved" class="text-xs text-gray-400">Saved</span>
+        <span v-if="saving" class="text-xs text-gray-500" role="status">Saving…</span>
+        <span v-else-if="lastSaved" class="text-xs text-gray-500" role="status">Saved</span>
         <Button @click="showPreview = true">Preview</Button>
         <Button @click="save">Save</Button>
         <Button variant="solid" @click="publish">Publish</Button>
@@ -38,7 +39,10 @@
     </header>
 
     <div v-if="!loading" class="flex flex-1 overflow-hidden">
-      <div class="flex-1 overflow-y-auto p-6" :style="{ backgroundColor: doc.root.data.backdropColor }">
+      <div
+        class="flex-1 overflow-y-auto p-6"
+        :style="{ backgroundColor: doc.root.data.backdropColor }"
+      >
         <Canvas
           :doc="doc"
           :selected-id="selectedId"
@@ -51,7 +55,12 @@
         />
       </div>
 
-      <Inspector :block="selectedBlock" :doc="doc" @update="updateBlockProp" />
+      <Inspector
+        :block="selectedBlock"
+        :doc="doc"
+        @update="updateBlockProp"
+        @update-document="updateDocumentStyle"
+      />
     </div>
     <div v-else class="flex flex-1 items-center justify-center text-sm text-gray-400">
       Loading editor…
@@ -60,14 +69,26 @@
     <div
       v-if="showPreview"
       class="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-8"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Email HTML preview"
       @click.self="showPreview = false"
+      @keydown.esc="showPreview = false"
     >
       <div class="flex h-full w-full max-w-3xl flex-col rounded bg-white shadow-xl">
         <div class="flex items-center justify-between border-b px-4 py-2">
           <p class="text-sm font-medium text-gray-700">Email HTML Preview</p>
           <Button variant="ghost" @click="showPreview = false">Close</Button>
         </div>
-        <iframe class="flex-1" :srcdoc="previewHtml" />
+        <!-- sandbox (no allow-scripts, no allow-same-origin): a Custom HTML block is raw
+             author HTML, so the preview renders it in an opaque origin with no JS. -->
+        <iframe
+          class="flex-1"
+          title="Email HTML preview"
+          sandbox
+          :style="{ maxWidth: previewWidth + 'px', margin: '0 auto', width: '100%' }"
+          :srcdoc="previewHtml"
+        />
       </div>
     </div>
   </div>
@@ -76,6 +97,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { toast } from 'frappe-ui'
 import Canvas from '../components/Canvas.vue'
 import Inspector from '../components/Inspector.vue'
 import {
@@ -87,14 +109,15 @@ import {
   groupWithNext,
 } from '../data/blockFactory'
 import { renderDocumentToHtml } from '../email/renderHtml'
-import {
-  getBlockLibrary,
-  getTemplate,
-  saveTemplateLayout,
-  publishTemplate,
-} from '../data/api'
+import { getBlockLibrary, getTemplate, saveTemplateLayout, publishTemplate } from '../data/api'
 
 const route = useRoute()
+
+const PREVIEW_MODES = [
+  { label: 'Desktop', width: 600 },
+  { label: 'Tablet', width: 480 },
+  { label: 'Mobile', width: 375 },
+]
 
 const loading = ref(true)
 const saving = ref(false)
@@ -116,6 +139,10 @@ const previewHtml = computed(() => renderDocumentToHtml(doc))
 function updateBlockProp({ id, key, value }) {
   const node = doc[id]
   if (node) node.data.props[key] = value
+}
+
+function updateDocumentStyle({ key, value }) {
+  doc.root.data[key] = value
 }
 
 function insertBlockAt({ parentId, libraryBlock, index }) {
@@ -145,28 +172,47 @@ function replaceDoc(newDoc) {
 
 async function loadEditor() {
   loading.value = true
-  blockLibrary.value = await getBlockLibrary()
+  try {
+    blockLibrary.value = await getBlockLibrary()
 
-  if (route.params.name) {
-    template.value = await getTemplate(route.params.name)
-    replaceDoc(migrateLegacyLayout(template.value.layout))
+    if (route.params.name) {
+      template.value = await getTemplate(route.params.name)
+      replaceDoc(migrateLegacyLayout(template.value.layout))
+    }
+  } catch (error) {
+    // api.js already toasted the reason; a malformed layout is the one it can't see.
+    if (error instanceof SyntaxError || error instanceof TypeError) {
+      toast.error("This template's layout is corrupted and couldn't be opened.")
+    }
+  } finally {
+    loading.value = false
   }
-  loading.value = false
 }
 
 async function save() {
-  if (!template.value) return
+  if (!template.value) return false
   saving.value = true
-  await saveTemplateLayout(template.value.name, doc, renderDocumentToHtml(doc))
-  saving.value = false
-  lastSaved.value = true
+  try {
+    await saveTemplateLayout(template.value.name, doc, renderDocumentToHtml(doc))
+    lastSaved.value = true
+    return true
+  } catch {
+    return false
+  } finally {
+    saving.value = false
+  }
 }
 
 async function publish() {
   if (!template.value) return
-  await save()
-  await publishTemplate(template.value.name)
-  template.value.status = 'Published'
+  if (!(await save())) return
+  try {
+    await publishTemplate(template.value.name)
+    template.value.status = 'Published'
+    toast.success('Template published')
+  } catch {
+    // toasted by api.js
+  }
 }
 
 onMounted(loadEditor)

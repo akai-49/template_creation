@@ -1,4 +1,5 @@
 import { escapeHtml } from '../escapeHtml'
+import { safeSrc } from '../safeUrl'
 import { paddingCss } from '../paddingCss'
 
 export function renderImage(block) {
@@ -11,7 +12,7 @@ export function renderImage(block) {
   }
   return `<tr>
     <td style="padding:${padding};text-align:${align};">
-      <img src="${escapeHtml(p.src)}" alt="${escapeHtml(p.alt)}" width="100%" style="width:${width};max-width:100%;display:inline-block;border:0;" />
+      <img src="${escapeHtml(safeSrc(p.src))}" alt="${escapeHtml(p.alt)}" width="100%" style="width:${width};max-width:100%;display:inline-block;border:0;" />
     </td>
   </tr>`
 }

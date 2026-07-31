@@ -4,9 +4,23 @@
 
 const PADDING_FIELDS = [
   { key: 'paddingTop', label: 'Padding top', control: 'slider', min: 0, max: 80, unit: 'px' },
-  { key: 'paddingBottom', label: 'Padding bottom', control: 'slider', min: 0, max: 80, unit: 'px' },
+  {
+    key: 'paddingBottom',
+    label: 'Padding bottom',
+    control: 'slider',
+    min: 0,
+    max: 80,
+    unit: 'px',
+  },
   { key: 'paddingLeft', label: 'Padding left', control: 'slider', min: 0, max: 80, unit: 'px' },
-  { key: 'paddingRight', label: 'Padding right', control: 'slider', min: 0, max: 80, unit: 'px' },
+  {
+    key: 'paddingRight',
+    label: 'Padding right',
+    control: 'slider',
+    min: 0,
+    max: 80,
+    unit: 'px',
+  },
 ]
 
 const ALIGN_FIELD = {
@@ -27,7 +41,14 @@ export const BLOCK_SCHEMAS = {
       { key: 'text', label: 'Content', control: 'textarea' },
       { key: 'color', label: 'Text color', control: 'color' },
       { key: 'backgroundColor', label: 'Background color', control: 'color' },
-      { key: 'fontSize', label: 'Font size', control: 'slider', min: 8, max: 96, unit: 'px' },
+      {
+        key: 'fontSize',
+        label: 'Font size',
+        control: 'slider',
+        min: 8,
+        max: 96,
+        unit: 'px',
+      },
       {
         key: 'fontWeight',
         label: 'Font weight',
@@ -67,7 +88,14 @@ export const BLOCK_SCHEMAS = {
       },
       { key: 'textColor', label: 'Text color', control: 'color' },
       { key: 'backgroundColor', label: 'Button color', control: 'color' },
-      { key: 'fontSize', label: 'Font size', control: 'slider', min: 8, max: 48, unit: 'px' },
+      {
+        key: 'fontSize',
+        label: 'Font size',
+        control: 'slider',
+        min: 8,
+        max: 48,
+        unit: 'px',
+      },
       {
         key: 'fontWeight',
         label: 'Font weight',
@@ -103,7 +131,14 @@ export const BLOCK_SCHEMAS = {
     label: 'Divider block',
     fields: [
       { key: 'color', label: 'Color', control: 'color' },
-      { key: 'thickness', label: 'Thickness', control: 'slider', min: 1, max: 10, unit: 'px' },
+      {
+        key: 'thickness',
+        label: 'Thickness',
+        control: 'slider',
+        min: 1,
+        max: 10,
+        unit: 'px',
+      },
       ...PADDING_FIELDS,
     ],
   },
@@ -148,7 +183,10 @@ export const BLOCK_SCHEMAS = {
   },
   Section: {
     label: 'Section',
-    fields: [{ key: 'backgroundColor', label: 'Background color', control: 'color' }, ...PADDING_FIELDS],
+    fields: [
+      { key: 'backgroundColor', label: 'Background color', control: 'color' },
+      ...PADDING_FIELDS,
+    ],
   },
   Columns: {
     label: 'Columns',
@@ -160,7 +198,10 @@ export const BLOCK_SCHEMAS = {
   },
   Header: {
     label: 'Header',
-    fields: [{ key: 'backgroundColor', label: 'Background color', control: 'color' }, ...PADDING_FIELDS],
+    fields: [
+      { key: 'backgroundColor', label: 'Background color', control: 'color' },
+      ...PADDING_FIELDS,
+    ],
   },
   Footer: {
     label: 'Footer',

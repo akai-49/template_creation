@@ -22,7 +22,10 @@
     </draggable>
     <!-- ponytail: append-only insert (top-level) + drag-to-reorder covers insert-at-position; add mid-list "+" when users ask for it -->
     <div class="pb-4" @click.stop>
-      <AddBlockButton :library="library" @insert="(lib) => $emit('insert', { parentId: 'root', libraryBlock: lib })" />
+      <AddBlockButton
+        :library="library"
+        @insert="(lib) => $emit('insert', { parentId: 'root', libraryBlock: lib })"
+      />
     </div>
   </div>
 </template>

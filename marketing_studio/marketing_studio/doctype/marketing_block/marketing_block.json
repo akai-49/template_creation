@@ -43,7 +43,8 @@
    "fieldtype": "Select",
    "in_standard_filter": 1,
    "label": "Category",
-   "options": "Layout\nContent\nMedia\nForm\nSocial"
+   "options": "Layout\nContent\nMedia\nForm\nSocial",
+   "search_index": 1
   },
   {
    "fieldname": "column_break_icon",
@@ -66,7 +67,8 @@
    "default": "1",
    "fieldname": "is_active",
    "fieldtype": "Check",
-   "label": "Is Active"
+   "label": "Is Active",
+   "search_index": 1
   },
   {
    "fieldname": "section_break_config",

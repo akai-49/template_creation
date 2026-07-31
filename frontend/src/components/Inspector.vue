@@ -3,14 +3,22 @@
     <div class="flex border-b">
       <button
         class="flex-1 border-b-2 px-3 py-2 text-xs font-semibold uppercase tracking-wide"
-        :class="activeTab === 'styles' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-400'"
+        :class="
+          activeTab === 'styles'
+            ? 'border-gray-900 text-gray-900'
+            : 'border-transparent text-gray-400'
+        "
         @click="activeTab = 'styles'"
       >
         Styles
       </button>
       <button
         class="flex-1 border-b-2 px-3 py-2 text-xs font-semibold uppercase tracking-wide"
-        :class="activeTab === 'inspect' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-400'"
+        :class="
+          activeTab === 'inspect'
+            ? 'border-gray-900 text-gray-900'
+            : 'border-transparent text-gray-400'
+        "
         @click="activeTab = 'inspect'"
       >
         Inspect
@@ -26,7 +34,7 @@
         :key="field.key"
         :field="field"
         :model-value="doc.root.data[field.key]"
-        @update:model-value="(v) => (doc.root.data[field.key] = v)"
+        @update:model-value="(v) => emit('update-document', { key: field.key, value: v })"
       />
     </div>
 
@@ -56,7 +64,7 @@ const props = defineProps({
   doc: { type: Object, required: true },
 })
 
-const emit = defineEmits(['update'])
+const emit = defineEmits(['update', 'update-document'])
 
 const activeTab = ref('styles')
 watch(

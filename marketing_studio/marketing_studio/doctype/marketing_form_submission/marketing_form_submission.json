@@ -21,13 +21,15 @@
    "in_list_view": 1,
    "label": "Template",
    "options": "Marketing Template",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "campaign",
    "fieldtype": "Link",
    "label": "Campaign",
-   "options": "Marketing Campaign"
+   "options": "Marketing Campaign",
+   "search_index": 1
   },
   {
    "fieldname": "submitter_name",
@@ -40,7 +42,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Submitter Email",
-   "options": "Email"
+   "options": "Email",
+   "search_index": 1
   },
   {
    "fieldname": "submitted_data",

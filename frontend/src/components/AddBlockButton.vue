@@ -2,7 +2,9 @@
   <div class="relative flex items-center justify-center py-1">
     <button
       type="button"
-      class="z-10 flex h-6 w-6 items-center justify-center rounded-full bg-blue-500 text-white shadow hover:bg-blue-600"
+      class="z-10 flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-white shadow hover:bg-blue-700"
+      aria-label="Add block"
+      :aria-expanded="open"
       @click="open = !open"
     >
       +
@@ -10,7 +12,9 @@
 
     <template v-if="open">
       <div class="fixed inset-0 z-10" @click="open = false" />
-      <div class="absolute top-7 z-20 grid w-64 grid-cols-4 gap-2 rounded border bg-white p-3 shadow-lg">
+      <div
+        class="absolute top-7 z-20 grid w-64 grid-cols-4 gap-2 rounded border bg-white p-3 shadow-lg"
+      >
         <button
           v-for="lib in library"
           :key="lib.name"

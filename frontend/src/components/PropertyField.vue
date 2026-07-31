@@ -1,9 +1,16 @@
 <template>
   <div class="mb-4">
-    <label class="mb-1 block text-xs font-medium text-gray-600">{{ field.label }}</label>
+    <label
+      :id="`${controlId}-label`"
+      :for="controlId"
+      class="mb-1 block text-xs font-medium text-gray-700"
+    >
+      {{ field.label }}
+    </label>
 
     <textarea
       v-if="field.control === 'textarea'"
+      :id="controlId"
       class="w-full rounded border border-gray-300 p-2 text-sm"
       :class="field.monospace ? 'font-mono' : ''"
       rows="4"
@@ -13,6 +20,7 @@
 
     <input
       v-else-if="field.control === 'text'"
+      :id="controlId"
       class="w-full rounded border border-gray-300 p-2 text-sm"
       :value="modelValue"
       @change="emitUpdate($event.target.value)"
@@ -20,6 +28,7 @@
 
     <div v-else-if="field.control === 'color'" class="flex items-center gap-2">
       <input
+        :id="controlId"
         type="color"
         class="h-8 w-10 shrink-0 cursor-pointer rounded border border-gray-300 p-0"
         :value="normalizeHex(modelValue)"
@@ -29,7 +38,8 @@
       <button
         v-if="modelValue"
         type="button"
-        class="ml-auto text-xs text-gray-400 hover:text-gray-600"
+        class="ml-auto text-xs text-gray-600 hover:text-gray-900"
+        :aria-label="`Clear ${field.label}`"
         @click="emitUpdate('')"
       >
         Clear
@@ -38,6 +48,7 @@
 
     <select
       v-else-if="field.control === 'select'"
+      :id="controlId"
       class="w-full rounded border border-gray-300 p-2 text-sm"
       :value="modelValue"
       @change="emitUpdate($event.target.value)"
@@ -45,12 +56,18 @@
       <option v-for="opt in field.options" :key="opt" :value="opt">{{ opt }}</option>
     </select>
 
-    <div v-else-if="field.control === 'segmented'" class="flex overflow-hidden rounded border border-gray-300">
+    <div
+      v-else-if="field.control === 'segmented'"
+      class="flex overflow-hidden rounded border border-gray-300"
+      role="group"
+      :aria-labelledby="`${controlId}-label`"
+    >
       <button
         v-for="opt in field.options"
         :key="opt.value"
         type="button"
         class="flex-1 px-2 py-1.5 text-xs transition"
+        :aria-pressed="modelValue === opt.value"
         :class="
           modelValue === opt.value
             ? 'bg-gray-900 text-white'
@@ -64,6 +81,7 @@
 
     <div v-else-if="field.control === 'slider'" class="flex items-center gap-2">
       <input
+        :id="controlId"
         type="range"
         class="flex-1"
         :min="field.min"
@@ -78,6 +96,7 @@
 
     <label v-else-if="field.control === 'toggle'" class="inline-flex items-center gap-2">
       <input
+        :id="controlId"
         type="checkbox"
         :checked="modelValue"
         @change="emitUpdate($event.target.checked)"
@@ -87,6 +106,7 @@
 
     <div v-else-if="field.control === 'image'" class="space-y-2">
       <input
+        :id="controlId"
         class="w-full rounded border border-gray-300 p-2 text-sm"
         placeholder="Image URL"
         :value="modelValue"
@@ -98,18 +118,23 @@
         <input type="file" accept="image/*" class="hidden" @change="handleUpload" />
         {{ isUploading ? `Uploading… ${progress}%` : 'Upload from computer' }}
       </label>
-      <p v-if="error" class="text-xs text-red-500">{{ error.message || error }}</p>
+      <p v-if="error" role="alert" class="text-xs text-red-600">
+        {{ error.message || error }}
+      </p>
     </div>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useFileUpload } from 'frappe-ui'
 
-defineProps({
+const props = defineProps({
   field: { type: Object, required: true },
   modelValue: { type: [String, Number, Boolean], default: undefined },
 })
+
+const controlId = computed(() => `ms-prop-${props.field.key}`)
 
 const emit = defineEmits(['update:modelValue'])
 

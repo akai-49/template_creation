@@ -1,5 +1,8 @@
 <template>
-  <div class="rounded border border-dashed border-gray-300 text-xs text-gray-400" :style="{ padding: paddingStyle(p) }">
+  <div
+    class="rounded border border-dashed border-gray-300 text-xs text-gray-400"
+    :style="{ padding: paddingStyle(p) }"
+  >
     Custom HTML block
   </div>
 </template>

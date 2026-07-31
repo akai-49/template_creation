@@ -1,15 +1,16 @@
 import { escapeHtml } from '../escapeHtml'
+import { safeSrc, safeUrl } from '../safeUrl'
 import { paddingCss } from '../paddingCss'
 
 export function renderVideo(block) {
   const p = block.data.props || {}
-  const url = escapeHtml(p.url || '#')
+  const url = escapeHtml(safeUrl(p.url))
   const padding = paddingCss(p)
   if (p.thumbnail) {
     return `<tr>
       <td style="padding:${padding};">
         <a href="${url}" style="text-decoration:none;">
-          <img src="${escapeHtml(p.thumbnail)}" alt="Video" width="100%" style="width:100%;display:block;border:0;" />
+          <img src="${escapeHtml(safeSrc(p.thumbnail))}" alt="Video" width="100%" style="width:100%;display:block;border:0;" />
         </a>
       </td>
     </tr>`

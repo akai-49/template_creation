@@ -150,6 +150,55 @@ class TestTemplatePermissions(IntegrationTestCase):
 		with self.assertRaises(frappe.ValidationError):
 			create_template(title="Bad JSON", template_type="Email", layout="{not json")
 
+	def test_create_template_rejects_unknown_category(self):
+		frappe.set_user(self.manager)
+		with self.assertRaises(frappe.LinkValidationError):
+			create_template(title="Bad Category", template_type="Email", category="No Such Category")
+
+	def test_create_template_strips_html_from_title(self):
+		frappe.set_user(self.manager)
+		name = create_template(title="<b>Bold</b> Title", template_type="Email")
+		self.assertEqual(frappe.db.get_value("Marketing Template", name, "title"), "Bold Title")
+
+	def test_list_templates_filters_by_type_status_and_category(self):
+		frappe.set_user(self.manager)
+		if not frappe.db.exists("Marketing Template Category", "API Test Category"):
+			frappe.get_doc(
+				{"doctype": "Marketing Template Category", "category_name": "API Test Category"}
+			).insert(ignore_permissions=True)
+		name = create_template(title="Filter Me", template_type="SMS", category="API Test Category")
+
+		results = list_templates(template_type="SMS", category="API Test Category")
+		self.assertTrue(any(t.name == name for t in results))
+		self.assertTrue(all(t.template_type == "SMS" for t in results))
+
+		self.assertFalse(any(t.name == name for t in list_templates(status="Published")))
+
+	def test_get_block_library_parses_default_props_and_filters_inactive(self):
+		frappe.set_user(self.manager)
+		active = frappe.get_doc(
+			{
+				"doctype": "Marketing Block",
+				"block_name": "API Active Block",
+				"block_type": "Text",
+				"default_props": {"color": "#fff"},
+				"is_active": 1,
+			}
+		).insert(ignore_permissions=True)
+		inactive = frappe.get_doc(
+			{
+				"doctype": "Marketing Block",
+				"block_name": "API Inactive Block",
+				"block_type": "Text",
+				"is_active": 0,
+			}
+		).insert(ignore_permissions=True)
+
+		blocks = {b.name: b for b in get_block_library()}
+		self.assertIn(active.name, blocks)
+		self.assertEqual(blocks[active.name].default_props, {"color": "#fff"})
+		self.assertNotIn(inactive.name, blocks)
+
 
 class TestSubmitForm(IntegrationTestCase):
 	@classmethod

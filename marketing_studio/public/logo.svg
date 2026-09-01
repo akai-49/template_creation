@@ -1,0 +1,22 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="studio-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#6366F1"/>
+    </linearGradient>
+  </defs>
+  <!-- Native Frappe Squircle -->
+  <path d="M214.286 0H85.7143C38.3756 0 0 38.3756 0 85.7143V214.286C0 261.624 38.3756 300 85.7143 300H214.286C261.624 300 300 261.624 300 214.286V85.7143C300 38.3756 261.624 0 214.286 0Z" fill="url(#studio-bg)"/>
+  
+  <!-- Template Blocks Studio Glyph -->
+  <g transform="translate(62, 62) scale(1.76)">
+    <!-- Header Hero Banner Block -->
+    <rect x="6" y="8" width="88" height="24" rx="6" fill="#FFFFFF"/>
+    <!-- Left Main Column Block -->
+    <rect x="6" y="40" width="40" height="52" rx="6" fill="#FFFFFF" fill-opacity="0.95"/>
+    <!-- Right Column Block 1 -->
+    <rect x="54" y="40" width="40" height="22" rx="6" fill="#FFFFFF" fill-opacity="0.95"/>
+    <!-- Right Column Block 2 -->
+    <rect x="54" y="70" width="40" height="22" rx="6" fill="#FFFFFF" fill-opacity="0.8"/>
+  </g>
+</svg>

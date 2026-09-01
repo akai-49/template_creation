@@ -17,7 +17,7 @@ required_apps = ["msuite_workspace"]
 add_to_apps_screen = [
 	{
 		"name": "marketing_studio",
-		"logo": "/assets/marketing_studio/logo.png",
+		"logo": "/assets/marketing_studio/logo.svg",
 		"title": "Marketing Studio",
 		"route": "/marketing-studio",
 	}

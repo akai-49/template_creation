@@ -2,6 +2,12 @@
 
 Drag-and-drop marketing template builder for email, web forms and landing pages
 
+### Central Configuration
+
+The following Marketing Studio configuration keys are read through `msuite_core.central_config` and can still be set in `site_config.json` until removed:
+- `marketing_studio_captcha_secret`
+- `marketing_studio_captcha_url`
+
 ### Installation
 
 You can install this app using the [bench](https://github.com/frappe/bench) CLI:

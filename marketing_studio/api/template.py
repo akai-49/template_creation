@@ -218,8 +218,10 @@ def _clean_value(value, depth):
 
 
 def _verify_captcha(token):
-	"""No-op unless `marketing_studio_captcha_secret` is set in site config."""
-	secret = frappe.conf.get("marketing_studio_captcha_secret")
+	"""No-op unless `marketing_studio_captcha_secret` is set in central config or site config."""
+	from msuite_core.central_config import get_central_config
+
+	secret = get_central_config("marketing_studio_captcha_secret")
 	if not secret:
 		return
 
@@ -228,7 +230,7 @@ def _verify_captcha(token):
 	if not token:
 		frappe.throw(_("Captcha verification failed"), frappe.ValidationError)
 
-	url = frappe.conf.get("marketing_studio_captcha_url") or "https://www.google.com/recaptcha/api/siteverify"
+	url = get_central_config("marketing_studio_captcha_url") or "https://www.google.com/recaptcha/api/siteverify"
 	result = make_post_request(
 		url,
 		data={"secret": secret, "response": token, "remoteip": frappe.local.request_ip},

@@ -10,8 +10,8 @@ app_icon_route = "/marketing-studio"
 # Apps
 # ------------------
 
-# Marketing Form Submission links to "Marketing Campaign", which msuite_workspace owns.
-required_apps = ["msuite_workspace"]
+# Marketing Form Submission links to "Marketing Campaign", which msuite_campaigns owns.
+required_apps = ["msuite_campaigns"]
 
 # Each item in the list will be shown as an app in the apps page
 add_to_apps_screen = [

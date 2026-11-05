@@ -6,7 +6,7 @@ import json
 import frappe
 from frappe.tests import IntegrationTestCase
 
-# `campaign` links to Marketing Campaign, owned by msuite_workspace. Pulling in its
+# `campaign` links to Marketing Campaign, owned by msuite_campaigns. Pulling in its
 # full fixture graph is unnecessary for these tests and can drag in unrelated (and
 # occasionally broken) doctype chains from other installed apps.
 IGNORE_TEST_RECORD_DEPENDENCIES = ["Marketing Campaign"]

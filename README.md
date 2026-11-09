@@ -8,6 +8,10 @@ The following Marketing Studio configuration keys are read through `msuite_core.
 - `marketing_studio_captcha_secret`
 - `marketing_studio_captcha_url`
 
+### Dependencies
+
+- `msuite_campaigns`: Declared in `required_apps`. Marketing Studio's `Marketing Form Submission` links to `Marketing Campaign`, which is owned by `msuite_campaigns` (which pulls `msuite_core` and `frappe`).
+
 ### Installation
 
 You can install this app using the [bench](https://github.com/frappe/bench) CLI:

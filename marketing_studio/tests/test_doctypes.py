@@ -2,6 +2,7 @@
 setup/seed scripts, the shared `ensure_json` helper, and hook overrides.
 """
 
+from contextlib import contextmanager
 import json
 
 import frappe
@@ -10,6 +11,20 @@ from frappe.tests import IntegrationTestCase
 from marketing_studio.setup_blocks import STANDARD_BLOCKS, seed_blocks, update_block_defaults
 from marketing_studio.uninstall import DESK_ICON_ROUTE, WORKSPACE_SIDEBAR, before_uninstall
 from marketing_studio.utils import ensure_json
+
+
+@contextmanager
+def _allow_workspace_sidebar_insert():
+	"""Frappe v16 marks Workspace Sidebar as an inert archive whose rows can
+	only be created during migration, patch, or install. Enable in_patch
+	strictly for fixture insertion and restore the prior flag state.
+	"""
+	previous = getattr(frappe.flags, "in_patch", None)
+	frappe.flags.in_patch = True
+	try:
+		yield
+	finally:
+		frappe.flags.in_patch = previous
 
 
 class TestBlockSeeding(IntegrationTestCase):
@@ -73,9 +88,10 @@ class TestDesktopIconOverride(IntegrationTestCase):
 		self.assertEqual(doc.link, "/marketing-studio")
 
 	def test_workspace_sidebar_link_clears_link(self):
-		sidebar = frappe.get_doc(
-			{"doctype": "Workspace Sidebar", "title": "MS Override Test Sidebar"}
-		).insert(ignore_permissions=True)
+		with _allow_workspace_sidebar_insert():
+			sidebar = frappe.get_doc(
+				{"doctype": "Workspace Sidebar", "title": "MS Override Test Sidebar"}
+			).insert(ignore_permissions=True)
 		doc = frappe.get_doc(
 			{
 				"doctype": "Desktop Icon",
@@ -116,13 +132,14 @@ class TestUninstallCleanup(IntegrationTestCase):
 		)
 
 	def test_before_uninstall_removes_the_workspace_sidebar(self):
-		frappe.get_doc(
-			{
-				"doctype": "Workspace Sidebar",
-				"title": WORKSPACE_SIDEBAR,
-				"app": "marketing_studio",
-			}
-		).insert(ignore_permissions=True)
+		with _allow_workspace_sidebar_insert():
+			frappe.get_doc(
+				{
+					"doctype": "Workspace Sidebar",
+					"title": WORKSPACE_SIDEBAR,
+					"app": "marketing_studio",
+				}
+			).insert(ignore_permissions=True)
 
 		before_uninstall()
 
